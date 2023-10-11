@@ -11,9 +11,9 @@ internal sealed class HrDatabaseContext : DbContext
     {
     }
 
-    public DbSet<LeaveType>? LeaveTypes { get; set; }
-    public DbSet<LeaveAllocation>? LeaveAllocations { get; set; }
-    public DbSet<LeaveRequest>? LeaveRequests { get; set; }
+    public required DbSet<LeaveType> LeaveTypes { get; set; }
+    public required DbSet<LeaveAllocation> LeaveAllocations { get; set; }
+    public required DbSet<LeaveRequest> LeaveRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
