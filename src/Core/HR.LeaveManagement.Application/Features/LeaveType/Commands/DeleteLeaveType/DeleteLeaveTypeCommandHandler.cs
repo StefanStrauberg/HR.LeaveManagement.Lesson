@@ -8,9 +8,7 @@ internal sealed class DeleteLeaveTypeCommandHandler : IRequestHandler<DeleteLeav
     private readonly ILeaveTypeRepository _leaveTypeRepository;
 
     public DeleteLeaveTypeCommandHandler(ILeaveTypeRepository leaveTypeRepository)
-    {
-        _leaveTypeRepository = leaveTypeRepository;
-    }
+        => _leaveTypeRepository = leaveTypeRepository;
 
     async Task<Unit> IRequestHandler<DeleteLeaveTypeCommand, Unit>.Handle(DeleteLeaveTypeCommand request, CancellationToken cancellationToken)
     {
