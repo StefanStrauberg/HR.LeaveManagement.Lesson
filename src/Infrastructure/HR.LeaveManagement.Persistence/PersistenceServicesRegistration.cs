@@ -7,9 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace HR.LeaveManagement.Persistence;
 
-public static class PersistenceServiceRegistration
+public static class PersistenceServicesRegistration
 {
-    public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPersistenceServices(this IServiceCollection services, 
+                                                            IConfiguration configuration)
     {
         services.AddDbContext<HrDatabaseContext>(options => {
             options.UseSqlServer(configuration.GetConnectionString("HrDatabaseConnectionString"));

@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace HR.LeaveManagement.Application;
 
-public static class ApplicationServiceRegistration
+public static class ApplicationServicesRegistration
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
