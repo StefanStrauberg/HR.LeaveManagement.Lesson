@@ -12,31 +12,43 @@ internal class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     public GenericRepository(HrDatabaseContext context)
         => Context = context;
 
-    public async Task<IReadOnlyList<T>> GetAsync(CancellationToken cancellationToken)
+    async Task<IReadOnlyList<T>> IGenericRepository<T>.GetAsync(CancellationToken cancellationToken)
         => await Context.Set<T>()
                         .AsNoTracking()
                         .ToListAsync(cancellationToken);
 
-    public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    async Task<T?> IGenericRepository<T>.GetByIdAsync(int id, 
+                                                      CancellationToken cancellationToken)
         => await Context.Set<T>()
                         .AsNoTracking()
                         .Where(x => x.Id == id)
                         .FirstOrDefaultAsync(cancellationToken);
 
-    public async Task CreateAsync(T entity, CancellationToken cancellationToken)
+    async Task IGenericRepository<T>.CreateAsync(T entity, 
+                                                 CancellationToken cancellationToken)
     {
         await Context.AddAsync(entity, cancellationToken);
         await Context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateTask(T entity, CancellationToken cancellationToken)
+    async Task IGenericRepository<T>.CreateManyAsync(IReadOnlyList<T> entities, 
+                                                     CancellationToken cancellationToken)
+    {
+        await Context.Set<T>()
+            .AddRangeAsync(entities, cancellationToken);
+        await Context.SaveChangesAsync(cancellationToken);
+    }
+
+    async Task IGenericRepository<T>.UpdateTask(T entity, 
+                                                CancellationToken cancellationToken)
     {
         Context.Update(entity);
         Context.Entry(entity).State = EntityState.Modified;
         await Context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteTask(T entity, CancellationToken cancellationToken)
+    async Task IGenericRepository<T>.DeleteTask(T entity, 
+                                                CancellationToken cancellationToken)
     {
         Context.Remove(entity);
         await Context.SaveChangesAsync(cancellationToken);

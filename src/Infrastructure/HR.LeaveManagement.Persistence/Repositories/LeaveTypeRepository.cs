@@ -5,16 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR.LeaveManagement.Persistence.Repositories
 {
-    internal sealed class LeaveTypeRepository : GenericRepository<LeaveType>, ILeaveTypeRepository
+    internal class LeaveTypeRepository : GenericRepository<LeaveType>, ILeaveTypeRepository
     {
         public LeaveTypeRepository(HrDatabaseContext context) : base(context)
         {
         }
 
-        public async Task<bool> IsLeaveTypeUnique(string name, CancellationToken token)
+        async Task<bool> ILeaveTypeRepository.IsLeaveTypeUnique(string name, 
+                                                                CancellationToken cancellationToken)
             => await Context.LeaveTypes
                             .AsNoTracking()
                             .Where(x => x.Name == name)
-                            .AnyAsync(token);
+                            .AnyAsync(cancellationToken);
     }
 }
