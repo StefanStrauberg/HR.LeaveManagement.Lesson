@@ -11,6 +11,9 @@ internal sealed class UpdateLeaveTypeCommandValidator : AbstractValidator<Update
     {
         _leaveTypeRepository = leaveTypeRepository;
 
+        RuleFor(x => x.Id)
+            .NotNull()
+            .MustAsync(LeaveTypeMustExists);
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("{PropertyName} is required")
             .NotNull()
@@ -23,6 +26,11 @@ internal sealed class UpdateLeaveTypeCommandValidator : AbstractValidator<Update
             .WithMessage("Leave type already exists");
     }
 
-    private async Task<bool> LeaveTypeNameUnique(UpdateLeaveTypeCommand command, CancellationToken token)
+    private async Task<bool> LeaveTypeMustExists(int id,
+                                                 CancellationToken cancellationToken)
+        => await _leaveTypeRepository.CheckEntityExistsByIdAsync(id, cancellationToken);
+
+    private async Task<bool> LeaveTypeNameUnique(UpdateLeaveTypeCommand command, 
+                                                 CancellationToken token)
         => await _leaveTypeRepository.IsLeaveTypeUnique(command.Name, token);
 }

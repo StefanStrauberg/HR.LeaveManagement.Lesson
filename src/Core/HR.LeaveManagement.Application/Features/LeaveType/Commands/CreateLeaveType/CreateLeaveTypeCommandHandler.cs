@@ -10,13 +10,15 @@ internal sealed class CreateLeaveTypeCommandHandler : IRequestHandler<CreateLeav
     private readonly IMapper _mapper;
     private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-    public CreateLeaveTypeCommandHandler(IMapper mapper, ILeaveTypeRepository leaveTypeRepository)
+    public CreateLeaveTypeCommandHandler(IMapper mapper, 
+                                         ILeaveTypeRepository leaveTypeRepository)
     {
         _mapper = mapper;
         _leaveTypeRepository = leaveTypeRepository;
     }
 
-    async Task<int> IRequestHandler<CreateLeaveTypeCommand, int>.Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
+    async Task<int> IRequestHandler<CreateLeaveTypeCommand, int>.Handle(CreateLeaveTypeCommand request, 
+                                                                        CancellationToken cancellationToken)
     {
         // Validate incoming data
         var validator = new CreateLeaveTypeCommandValidator(_leaveTypeRepository);

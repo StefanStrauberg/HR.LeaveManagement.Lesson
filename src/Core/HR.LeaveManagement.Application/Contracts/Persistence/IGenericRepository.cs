@@ -13,4 +13,7 @@ public interface IGenericRepository<T> where T : class
                     CancellationToken cancellationToken);
     Task DeleteTask(T entity, 
                     CancellationToken cancellationToken);
+
+    Task<bool> CheckEntityExistsByIdAsync(int id, 
+                                          CancellationToken cancellationToken);
 }

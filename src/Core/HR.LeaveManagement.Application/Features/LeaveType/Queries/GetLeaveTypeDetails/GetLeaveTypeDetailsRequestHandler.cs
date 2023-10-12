@@ -9,13 +9,15 @@ internal sealed class GetLeaveTypeDetailsRequestHandler : IRequestHandler<GetLea
     private readonly IMapper _mapper;
     private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-    public GetLeaveTypeDetailsRequestHandler(IMapper mapper, ILeaveTypeRepository leaveTypeRepository)
+    public GetLeaveTypeDetailsRequestHandler(IMapper mapper, 
+                                             ILeaveTypeRepository leaveTypeRepository)
     {
         _mapper = mapper;
         _leaveTypeRepository = leaveTypeRepository;
     }
 
-    async Task<LeaveTypeDetailsDto> IRequestHandler<GetLeaveTypeDetailsRequest, LeaveTypeDetailsDto>.Handle(GetLeaveTypeDetailsRequest request, CancellationToken cancellationToken)
+    async Task<LeaveTypeDetailsDto> IRequestHandler<GetLeaveTypeDetailsRequest, LeaveTypeDetailsDto>.Handle(GetLeaveTypeDetailsRequest request, 
+                                                                                                            CancellationToken cancellationToken)
     {
         // Query the DB
         var leaveType = await _leaveTypeRepository.GetByIdAsync(request.Id, cancellationToken);

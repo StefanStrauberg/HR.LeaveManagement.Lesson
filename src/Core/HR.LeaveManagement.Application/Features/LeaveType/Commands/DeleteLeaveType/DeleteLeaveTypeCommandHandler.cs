@@ -10,7 +10,8 @@ internal sealed class DeleteLeaveTypeCommandHandler : IRequestHandler<DeleteLeav
     public DeleteLeaveTypeCommandHandler(ILeaveTypeRepository leaveTypeRepository)
         => _leaveTypeRepository = leaveTypeRepository;
 
-    async Task<Unit> IRequestHandler<DeleteLeaveTypeCommand, Unit>.Handle(DeleteLeaveTypeCommand request, CancellationToken cancellationToken)
+    async Task<Unit> IRequestHandler<DeleteLeaveTypeCommand, Unit>.Handle(DeleteLeaveTypeCommand request, 
+                                                                          CancellationToken cancellationToken)
     {
         // Retrieve domain entity object and verify that record exists
         var leaveTypeToDelete = await _leaveTypeRepository.GetByIdAsync(request.Id, cancellationToken) ?? throw new Exception();
