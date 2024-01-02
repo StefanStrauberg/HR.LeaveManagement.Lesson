@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR.LeaveManagement.Persistence.Repositories;
 
-internal class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+internal class GenericRepository<T>(HrDatabaseContext context) : IGenericRepository<T> where T : BaseEntity
 {
-    protected readonly HrDatabaseContext Context;
-
-    public GenericRepository(HrDatabaseContext context)
-        => Context = context;
+    protected readonly HrDatabaseContext Context = context
+        ?? throw new ArgumentNullException(nameof(context));
 
     async Task<IReadOnlyList<T>> IGenericRepository<T>.GetAsync(CancellationToken cancellationToken)
         => await Context.Set<T>()

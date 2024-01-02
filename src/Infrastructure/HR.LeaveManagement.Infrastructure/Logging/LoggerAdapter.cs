@@ -3,16 +3,18 @@ using Microsoft.Extensions.Logging;
 
 namespace HR.LeaveManagement.Infrastructure.Logging;
 
-internal class LoggerAdapter<T> : IAppLogger<T>
+internal class LoggerAdapter<T>(ILoggerFactory loggerFactory) : IAppLogger<T>
 {
-    private readonly ILogger<T> _logger;
+    readonly ILogger<T> _logger = loggerFactory.CreateLogger<T>()
+        ?? throw new ArgumentNullException(nameof(loggerFactory));
 
-    public LoggerAdapter(ILoggerFactory loggerFactory)
-        => _logger = loggerFactory.CreateLogger<T>();
+    public void LogInformation(string message,
+                               params object[] args)
+        => _logger.LogInformation(message,
+                                  args);
 
-    public void LogInformation(string message, params object[] args)
-        => _logger.LogInformation(message, args);
-
-    public void LogWarning(string message, params object[] args)
-        => _logger.LogError(message, args);
+    public void LogWarning(string message,
+                           params object[] args)
+        => _logger.LogError(message,
+                            args);
 }

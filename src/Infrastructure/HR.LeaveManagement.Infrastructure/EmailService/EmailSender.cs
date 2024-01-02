@@ -7,12 +7,10 @@ using MimeKit;
 
 namespace HR.LeaveManagement.Infrastructure.EmailService;
 
-internal sealed class EmailSender : IEmailSender
+internal sealed class EmailSender(IOptions<EmailSettings> emailSettings) : IEmailSender
 {
-    private readonly EmailSettings _emailSettings;
-
-    public EmailSender(IOptions<EmailSettings> emailSettings)
-        => _emailSettings = emailSettings.Value;
+    readonly EmailSettings _emailSettings = emailSettings.Value
+        ?? throw new ArgumentNullException(nameof(emailSettings));
 
     async Task<bool> IEmailSender.SendEmailAsync(EmailMessage email)
     {
@@ -28,8 +26,11 @@ internal sealed class EmailSender : IEmailSender
         try
         {
             using var smtpClient = new SmtpClient();
-            await smtpClient.ConnectAsync("smtp.gmail.com", 587, true);
-            await smtpClient.AuthenticateAsync("user", "password");
+            await smtpClient.ConnectAsync("smtp.gmail.com",
+                                          587,
+                                          true);
+            await smtpClient.AuthenticateAsync("user",
+                                               "password");
             await smtpClient.SendAsync(mailMessage);
             await smtpClient.DisconnectAsync(true);
 

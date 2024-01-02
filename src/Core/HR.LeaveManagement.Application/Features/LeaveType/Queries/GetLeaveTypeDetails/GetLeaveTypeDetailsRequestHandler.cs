@@ -4,25 +4,24 @@ using MediatR;
 
 namespace HR.LeaveManagement.Application.Features.LeaveType.Queries.GetLeaveTypeDetails;
 
-internal sealed class GetLeaveTypeDetailsRequestHandler : IRequestHandler<GetLeaveTypeDetailsRequest, LeaveTypeDetailsDto>
+internal sealed class GetLeaveTypeDetailsRequestHandler(IMapper mapper,
+                                                        ILeaveTypeRepository leaveTypeRepository) : IRequestHandler<GetLeaveTypeDetailsRequest, LeaveTypeDetailsDto>
 {
-    private readonly IMapper _mapper;
-    private readonly ILeaveTypeRepository _leaveTypeRepository;
+    readonly IMapper _mapper = mapper
+        ?? throw new ArgumentNullException(nameof(mapper));
+    readonly ILeaveTypeRepository _leaveTypeRepository = leaveTypeRepository
+        ?? throw new ArgumentNullException(nameof(leaveTypeRepository));
 
-    public GetLeaveTypeDetailsRequestHandler(IMapper mapper, 
-                                             ILeaveTypeRepository leaveTypeRepository)
-    {
-        _mapper = mapper;
-        _leaveTypeRepository = leaveTypeRepository;
-    }
-
-    async Task<LeaveTypeDetailsDto> IRequestHandler<GetLeaveTypeDetailsRequest, LeaveTypeDetailsDto>.Handle(GetLeaveTypeDetailsRequest request, 
+    async Task<LeaveTypeDetailsDto> IRequestHandler<GetLeaveTypeDetailsRequest, LeaveTypeDetailsDto>.Handle(GetLeaveTypeDetailsRequest request,
                                                                                                             CancellationToken cancellationToken)
     {
         // Query the DB
-        var leaveType = await _leaveTypeRepository.GetByIdAsync(request.Id, cancellationToken);
+        var leaveType = await _leaveTypeRepository.GetByIdAsync(request.Id,
+                                                                cancellationToken);
+
         // Convert data object to DTO object
         var data = _mapper.Map<LeaveTypeDetailsDto>(leaveType);
+
         // Return DTO object
         return data;
     }

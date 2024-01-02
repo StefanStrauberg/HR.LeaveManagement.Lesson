@@ -6,38 +6,41 @@ using MediatR;
 
 namespace HR.LeaveManagement.Application.Features.LeaveType.Commands.UpdateLeaveType;
 
-internal sealed class UpdateLeaveTypeCommandHandler : IRequestHandler<UpdateLeaveTypeCommand, Unit>
+internal sealed class UpdateLeaveTypeCommandHandler(IMapper mapper,
+                                                    ILeaveTypeRepository leaveTypeRepository,
+                                                    IAppLogger<UpdateLeaveTypeCommandHandler> logger) : IRequestHandler<UpdateLeaveTypeCommand, Unit>
 {
-    private readonly IMapper _mapper;
-    private readonly ILeaveTypeRepository _leaveTypeRepository;
-    private readonly IAppLogger<UpdateLeaveTypeCommandHandler> _logger;
-
-    public UpdateLeaveTypeCommandHandler(IMapper mapper, 
-                                         ILeaveTypeRepository leaveTypeRepository,
-                                         IAppLogger<UpdateLeaveTypeCommandHandler> logger)
-    {
-        _mapper = mapper;
-        _leaveTypeRepository = leaveTypeRepository;
-        _logger = logger;
-    }
+    readonly IMapper _mapper = mapper
+        ?? throw new ArgumentNullException(nameof(mapper));
+    readonly ILeaveTypeRepository _leaveTypeRepository = leaveTypeRepository
+        ?? throw new ArgumentNullException(nameof(leaveTypeRepository));
+    readonly IAppLogger<UpdateLeaveTypeCommandHandler> _logger = logger
+        ?? throw new ArgumentNullException(nameof(logger));
 
     async Task<Unit> IRequestHandler<UpdateLeaveTypeCommand, Unit>.Handle(UpdateLeaveTypeCommand request, 
                                                                           CancellationToken cancellationToken)
     {
         // Validate incoming data
         var validator = new UpdateLeaveTypeCommandValidator(_leaveTypeRepository);
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-        if (validationResult.Errors.Any())
+        var validationResult = await validator.ValidateAsync(request,
+                                                             cancellationToken);
+
+        if (validationResult.Errors.Count != 0)
         {
-            _logger.LogWarning("Validation errors in update request for {0} - {1}", 
-                     nameof(LeaveType), 
+            _logger.LogWarning("Validation errors in update request for {0} - {1}",
+                               nameof(LeaveType),
                                request.Id);
-            throw new BadRequestException("Invalid Leave type", validationResult);
+            throw new BadRequestException("Invalid Leave type",
+                                          validationResult);
         }
+
         // Convert to domain entity object
         var leaveTypeToUpdate = _mapper.Map<Domain.LeaveType>(request);
+
         // Add to DB
-        await _leaveTypeRepository.UpdateTask(leaveTypeToUpdate, cancellationToken);
+        await _leaveTypeRepository.UpdateTask(leaveTypeToUpdate,
+                                              cancellationToken);
+
         // Return
         return Unit.Value;
     }

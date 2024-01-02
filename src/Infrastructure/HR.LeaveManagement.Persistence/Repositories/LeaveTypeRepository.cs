@@ -5,12 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR.LeaveManagement.Persistence.Repositories
 {
-    internal class LeaveTypeRepository : GenericRepository<LeaveType>, ILeaveTypeRepository
+    internal class LeaveTypeRepository(HrDatabaseContext context) : GenericRepository<LeaveType>(context), ILeaveTypeRepository
     {
-        public LeaveTypeRepository(HrDatabaseContext context) : base(context)
-        {
-        }
-
         async Task<bool> ILeaveTypeRepository.IsLeaveTypeUnique(string name, 
                                                                 CancellationToken cancellationToken)
             => await Context.LeaveTypes

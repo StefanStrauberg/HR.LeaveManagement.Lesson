@@ -5,15 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HR.LeaveManagement.Persistence.DatabaseContext;
 
-internal sealed class HrDatabaseContext : DbContext
+internal sealed class HrDatabaseContext(DbContextOptions<HrDatabaseContext> options) : DbContext(options)
 {
-    public HrDatabaseContext(DbContextOptions<HrDatabaseContext> options) : base(options)
-    {
-    }
-
-    public required DbSet<LeaveType> LeaveTypes { get; set; }
-    public required DbSet<LeaveAllocation> LeaveAllocations { get; set; }
-    public required DbSet<LeaveRequest> LeaveRequests { get; set; }
+    public DbSet<LeaveType> LeaveTypes { get; set; }
+    public DbSet<LeaveAllocation> LeaveAllocations { get; set; }
+    public DbSet<LeaveRequest> LeaveRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
