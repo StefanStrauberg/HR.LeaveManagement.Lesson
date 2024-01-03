@@ -54,8 +54,8 @@ internal class GenericRepository<T>(HrDatabaseContext context) : IGenericReposit
 
     async Task<bool> IGenericRepository<T>.CheckEntityExistsByIdAsync(int id,
                                                                       CancellationToken cancellationToken)
-        => !await Context.Set<T>()
-                         .AsNoTracking()
-                         .Where(x => x.Id == id)
-                         .AnyAsync(cancellationToken);
+        => await Context.Set<T>()
+                        .AsNoTracking()
+                        .Where(x => x.Id == id)
+                        .AnyAsync(cancellationToken);
 }

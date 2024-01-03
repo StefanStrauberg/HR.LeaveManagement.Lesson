@@ -27,7 +27,7 @@ internal sealed class CreateLeaveTypeCommandValidator : AbstractValidator<Create
     }
 
     private async Task<bool> LeaveTypeNameUnique(CreateLeaveTypeCommand command,
-                                                 CancellationToken token)
-        => await _leaveTypeRepository.IsLeaveTypeUnique(command.Name,
-                                                        token);
+                                                 CancellationToken cancellationToken)
+        => !await _leaveTypeRepository.IsLeaveTypeUnique(command.Name,
+                                                         cancellationToken);
 }

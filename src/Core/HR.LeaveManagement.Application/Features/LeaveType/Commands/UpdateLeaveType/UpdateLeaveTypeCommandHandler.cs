@@ -35,10 +35,11 @@ internal sealed class UpdateLeaveTypeCommandHandler(IMapper mapper,
         }
 
         // Convert to domain entity object
-        var leaveTypeToUpdate = _mapper.Map<Domain.LeaveType>(request);
+        var leaveTypeToUpdate = await _leaveTypeRepository.GetByIdAsync(request.Id, cancellationToken);
+        _mapper.Map(request, leaveTypeToUpdate, typeof(UpdateLeaveTypeCommand), typeof(Domain.LeaveType));
 
         // Add to DB
-        await _leaveTypeRepository.UpdateTask(leaveTypeToUpdate,
+        await _leaveTypeRepository.UpdateTask(leaveTypeToUpdate!,
                                               cancellationToken);
 
         // Return
